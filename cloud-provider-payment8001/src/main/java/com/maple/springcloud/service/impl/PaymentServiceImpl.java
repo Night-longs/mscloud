@@ -3,16 +3,16 @@ package com.maple.springcloud.service.impl;
 import com.maple.springcloud.dao.PaymentDao;
 import com.maple.springcloud.entities.Payment;
 import com.maple.springcloud.service.PaymentService;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
-    @Resource
-    private PaymentDao paymentDao;
+    private final PaymentDao paymentDao;
+
+    public PaymentServiceImpl(PaymentDao paymentDao) {
+        this.paymentDao = paymentDao;
+    }
 
     @Override
     public int create(Payment payment) {

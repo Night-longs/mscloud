@@ -4,24 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @Package_Name: com.maple.springcloud.entities
  * @Auth: Maple
- * @Date: 2022/7/11 14:33
+ * @Date: 2022/7/12 9:45
  **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommonResult<T> {
+public class Payment implements Serializable {
 
-    private Integer code;
+    private long id;
 
-    private String msg;
-
-    private T Data;
-
-    public CommonResult(Integer code, String msg) {
-        this(code, msg, null);
-    }
+    private String serial;
 
 }
