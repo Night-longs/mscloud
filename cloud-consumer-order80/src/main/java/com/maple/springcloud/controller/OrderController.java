@@ -21,7 +21,12 @@ public class OrderController {
 
     private final RestTemplate restTemplate;
 
-    public static final String PAYMENT_URL = "http://localhost:8001";
+    // 单机时可以写死地址
+    //public static final String PAYMENT_URL = "http://localhost:8001";
+
+    //集群时使用下面的地址 使用微服务名称
+    public static final String PAYMENT_URL = "http://CLOUD-PAYMENT-SERVICE";
+
 
     public OrderController(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;

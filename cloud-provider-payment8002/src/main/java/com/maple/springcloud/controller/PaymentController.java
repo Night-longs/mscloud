@@ -28,9 +28,9 @@ public class PaymentController {
         log.info("订单插入结果：" + result);
 
         if (result > 0) {
-            return new CommonResult<>(200, "插入数据库成功,serverPort:"+serverPort, payment);
+            return new CommonResult<>(200, "插入数据库成功,serverPort:" + serverPort, payment);
         } else {
-            return new CommonResult<>(400, "插入数据库失败,serverPort:"+serverPort, null);
+            return new CommonResult<>(400, "插入数据库失败,serverPort:" + serverPort, null);
         }
     }
 
@@ -40,9 +40,9 @@ public class PaymentController {
         Payment payment = paymentService.getPaymentById(id);
         log.info("订单查询结果：" + payment);
         if (payment != null) {
-            return new CommonResult<>(200, "查询数据库成功,serverPort:"+serverPort, payment);
+            return new CommonResult<>(200, "查询数据库成功,serverPort:" + serverPort, payment);
         } else {
-            return new CommonResult<>(400, "没有对应记录,serverPort:"+serverPort, id);
+            return new CommonResult<>(400, "没有对应记录,serverPort:" + serverPort, id);
         }
     }
 }
