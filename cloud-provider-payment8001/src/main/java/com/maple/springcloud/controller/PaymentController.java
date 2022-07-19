@@ -4,11 +4,9 @@ import com.maple.springcloud.entities.CommonResult;
 import com.maple.springcloud.entities.Payment;
 import com.maple.springcloud.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.sleuth.zipkin2.ZipkinProperties;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
