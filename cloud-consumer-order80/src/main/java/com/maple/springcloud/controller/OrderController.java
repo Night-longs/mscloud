@@ -3,10 +3,11 @@ package com.maple.springcloud.controller;
 import com.maple.springcloud.entities.CommonResult;
 import com.maple.springcloud.entities.Payment;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -32,15 +33,46 @@ public class OrderController {
         this.restTemplate = restTemplate;
     }
 
-    @GetMapping("/payment/create")
-    public CommonResult<Payment> create(Payment payment) {
+    @PostMapping("/payment/create")
+    public CommonResult<Payment> create(@RequestBody Payment payment) {
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Payment> requestEntity = new HttpEntity(payment, requestHeaders);
         return restTemplate.postForObject(PAYMENT_URL + "/payment/create",
-                payment, CommonResult.class);
+                requestEntity, CommonResult.class);
     }
 
     @GetMapping("/payment/get")
     public CommonResult<Payment> getPayment(@RequestParam Long id) {
         return restTemplate.getForObject(PAYMENT_URL + "/payment/get?id=" + id, CommonResult.class);
     }
+
+    @PostMapping("/payment/createEntity")
+    public CommonResult<Payment> createForEntity(@RequestBody Payment payment) {
+        //使用RestTemplate调用其他服务接口时要设置请求头，不然会报415请求参数格式不匹配
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Payment> requestEntity = new HttpEntity(payment, requestHeaders);
+        ResponseEntity<CommonResult> commonResultResponseEntity = restTemplate.postForEntity(PAYMENT_URL + "/payment/create", requestEntity, CommonResult.class);
+        if (commonResultResponseEntity.getStatusCode().is2xxSuccessful()) {
+            return new CommonResult(200, "操作成功");
+        } else {
+            return new CommonResult(200, "操作失败");
+
+        }
+    }
+
+
+    @GetMapping("/payment/getEntity")
+    public CommonResult<Payment> getPaymentEntity(@RequestParam Long id) {
+        ResponseEntity<CommonResult> forEntity = restTemplate.getForEntity(PAYMENT_URL + "/payment/get?id=" + id, CommonResult.class);
+        if (forEntity.getStatusCode().is2xxSuccessful()) {
+            return forEntity.getBody();
+        } else {
+            return new CommonResult(444, "操作失败");
+        }
+
+    }
+
 
 }
