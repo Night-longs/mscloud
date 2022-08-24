@@ -2,13 +2,20 @@ package com.maple.springcloud.controller;
 
 import com.maple.springcloud.entities.CommonResult;
 import com.maple.springcloud.entities.Payment;
+import com.maple.springcloud.lb.LoadBalancer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
+import java.util.List;
 
 /**
  * @Package_Name: com.maple.springcloud.controller
@@ -22,15 +29,20 @@ public class OrderController {
 
     private final RestTemplate restTemplate;
 
+    private final LoadBalancer loadBalancer;
+
+    private final DiscoveryClient discoveryClient;
+
     // 单机时可以写死地址
     //public static final String PAYMENT_URL = "http://localhost:8001";
 
     //集群时使用下面的地址 使用微服务名称
     public static final String PAYMENT_URL = "http://CLOUD-PAYMENT-SERVICE";
 
-
-    public OrderController(RestTemplate restTemplate) {
+    public OrderController(RestTemplate restTemplate, LoadBalancer loadBalancer, DiscoveryClient discoveryClient) {
         this.restTemplate = restTemplate;
+        this.loadBalancer = loadBalancer;
+        this.discoveryClient = discoveryClient;
     }
 
     @PostMapping("/payment/create")
@@ -71,7 +83,18 @@ public class OrderController {
         } else {
             return new CommonResult(444, "操作失败");
         }
+    }
 
+    @GetMapping(value = "/payment/lb")
+    public String getPaymentLB() {
+        List<ServiceInstance> instances = discoveryClient.getInstances("CLOUD-PAYMENT-SERVICE");
+        if (instances == null || instances.size() <= 0) {
+            return null;
+        }
+        ServiceInstance serviceInstance = loadBalancer.instances(instances);
+
+        URI uri = serviceInstance.getUri();
+        return restTemplate.getForObject(uri + "/payment/lb", String.class);
     }
 
 

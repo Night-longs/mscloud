@@ -15,5 +15,6 @@ public class MySelfRule {
     @Bean
     public IRule getRule() {
         return new RandomRule();
+
     }
 }

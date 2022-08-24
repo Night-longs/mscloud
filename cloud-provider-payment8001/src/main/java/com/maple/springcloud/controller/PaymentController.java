@@ -54,7 +54,7 @@ public class PaymentController {
     }
 
     @GetMapping("/discovery")
-    public  Object discovery() {
+    public Object discovery() {
         List<String> services = discoveryClient.getServices();
         for (String service : services) {
             log.info("-----------service:" + service);
@@ -67,4 +67,8 @@ public class PaymentController {
         return this.discoveryClient;
     }
 
+    @GetMapping(value = "/lb")
+    public String getPaymentLB() {
+        return serverPort;
+    }
 }
